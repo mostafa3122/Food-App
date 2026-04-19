@@ -7,7 +7,7 @@ import { EmailValidation, PasswordValidation } from '../../../../constants/Valid
 
 export default function Login() {
     const [showPass, setShowPass] = useState(false);
-    let { register, formState: { errors ,isSubmitting}, handleSubmit } = useForm();
+    let { register, formState: { errors ,isSubmitting,isValid}, handleSubmit } = useForm();
     const navigate = useNavigate()
     const onSubmit = async (data) => {
         console.log(data);
@@ -16,7 +16,7 @@ export default function Login() {
             console.log(response);
             navigate('/dashboard')
             localStorage.setItem('token', response.data.token)
-            toast.success("Login successful");
+            toast.success("Logged in successful");
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
@@ -60,7 +60,7 @@ export default function Login() {
                     <Link to='/forget-password' className='text-semibold text-success text-decoration-none '>Forget Password?</Link>
                 </div>
                 {/* Button */}
-                <button className=' btn btn-success  w-100 fw-bold'>{isSubmitting ? (
+                <button className=' btn btn-success  w-100 fw-bold' disabled={!isValid}>{isSubmitting ? (
                     <>
                         <span className="spinner-border spinner-border-sm me-2"></span>
                         Loading...

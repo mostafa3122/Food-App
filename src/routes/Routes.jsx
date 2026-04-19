@@ -12,7 +12,6 @@ import AuthLayout from "../modules/Shared/components/AuthLayout/AuthLayout";
 import MasterLayout from "../modules/Shared/components/MasterLayout/MasterLayout";
 import NotFound from "../modules/Shared/components/NotFound/NotFound";
 import UserList from "../modules/Users/components/UserList/UserList";
-import ChangePass from "../modules/Authentication/components/ChangePass/ChangePass";
 
 
 
