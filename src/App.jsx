@@ -1,11 +1,14 @@
 
+import { RouterProvider } from 'react-router-dom'
 import './App.css'
-
+import { routes } from './routes/Routes'
+import { ToastContainer } from 'react-toastify'
 function App() {
 
   return (
     <>
-      <h1 className='text-capitalize' >food app</h1>
+      <RouterProvider router={routes}></RouterProvider>
+      <ToastContainer position="top-right" autoClose={2000} />
     </>
   )
 }

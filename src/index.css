@@ -1,0 +1,70 @@
+.auth-container {
+    background-image: url(./assets/images/auth-bg.jpg);
+    background-position: center center;
+    background-size: cover;
+}
+
+.bg-overlay {
+    background: linear-gradient(45deg, rgba(47, 140, 96, 0.8), rgba(0, 0, 0, 0.6));
+}
+
+.auth-title  span {
+    font-size: 15px;
+    letter-spacing: 0;
+    line-height: 100%;
+}
+
+.custom-input-group {
+
+    background: rgba(247, 247, 247, 1);
+}
+
+.custom-input-group:focus-within {
+    border-color: #378ADD;
+    box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.13);
+}
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    color: rgba(131, 145, 161, 1);
+    font-size: 17px;
+    background: transparent;
+    flex-shrink: 0;
+}
+
+.input-line {
+    width: 1.5px;
+    align-self: stretch;
+    background: rgba(131, 145, 161, 1);
+
+    flex-shrink: 0;
+}
+
+.custom-input-group input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    flex: 1;
+    padding: 12px 14px;
+    font-size: 15px;
+    min-width: 0;
+}
+
+.aye-icon {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    color: #6c757d;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+form .btn-success {
+    border: none;
+    background: rgba(74, 163, 90, 1);
+}
