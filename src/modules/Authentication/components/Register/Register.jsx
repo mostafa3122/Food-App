@@ -1,8 +1,8 @@
-import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthApi } from '../../../../api';
 import { ConfirmPasswordValidation, CountryValidation, EmailValidation, PasswordValidation, PhoneValidation, UsernameValidation } from '../../../../constants/Validations';
 
 export default function Register() {
@@ -11,19 +11,15 @@ export default function Register() {
     let { register, watch, formState: { errors, isSubmitting, isValid }, handleSubmit } = useForm();
     const navigate = useNavigate()
     const onSubmit = async (data) => {
-        console.log(data);
         try {
-            const response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Register', data)
-            console.log(response);
-            navigate('/verify-account')
+            const response = await AuthApi.RegisterApi(data)
             localStorage.setItem('token', response.data.token)
+            navigate('/verify-account')
             toast.success("Registered successful");
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error.response.data.message || "Something went wrong");
         }
     }
-
     return (
         <>
             {/* Title */}
@@ -63,7 +59,7 @@ export default function Register() {
                     <div className="col-md-6 mb-3">
                         <div className="custom-input-group rounded-2 p-1 d-flex align-items-center  ">
                             <span className="input-icon  ">
-                                <i className="fa-solid fa-envelope"></i>
+                                <i className="fa-solid fa-earth"></i>
                             </span>
                             <div className="input-line my-1"></div>
                             <input {...register("country", CountryValidation)} type="text" placeholder='Country ' className="form-control p-2" aria-describedby="ContryHelpBlock" />
@@ -76,7 +72,7 @@ export default function Register() {
                     <div className="col-md-6 mb-3">
                         <div className="custom-input-group rounded-2 p-1 d-flex align-items-center  ">
                             <span className="input-icon  ">
-                                <i className="fa-solid fa-envelope"></i>
+                                <i className="fa-solid fa-phone"></i>
                             </span>
                             <div className="input-line my-1"></div>
                             <input {...register("phoneNumber", PhoneValidation)} type="tel" placeholder='Phone Number ' className="form-control p-2" aria-describedby="phoneNumberHelpBlock" />
@@ -119,10 +115,10 @@ export default function Register() {
                 </div>
                 {/* Links */}
                 <div className="links d-flex align-items-center justify-content-end  fw-medium mb-4">
-                    <Link to='/verify' className=' text-semibold text-success text-decoration-none '>Login Now?</Link>
+                    <Link to='/login' className=' text-semibold text-success text-decoration-none '>Login Now?</Link>
                 </div>
                 {/* Button */}
-                <button className=' btn btn-success  w-100 fw-bold' >{isSubmitting ? (
+                <button className=' btn btn-success  w-100 fw-bold' disabled={!isValid} >{isSubmitting ? (
                     <>
                         <span className="spinner-border spinner-border-sm me-2"></span>
                         Loading...

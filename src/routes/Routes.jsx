@@ -23,7 +23,7 @@ export const routes = createBrowserRouter(
             element: <AuthLayout />,
             errorElement: <NotFound />,
             children: [
-                { index: true, element: <Login /> },
+                { index: true, element: <Login saveLoginData={saveLoginData} /> },
                 { path: 'login', element: <Login /> },
                 { path: 'register', element: <Register /> },
                 { path: 'forget-password', element: <ForgetPass /> },

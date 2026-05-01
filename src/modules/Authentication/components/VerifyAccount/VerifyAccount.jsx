@@ -4,21 +4,18 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { AuthApi } from '../../../../api';
 
 export default function VerifyAccount() {
   let { register, formState: { errors, isSubmitting, isValid }, handleSubmit } = useForm();
   const navigate = useNavigate()
   const onSubmit = async (data) => {
-    console.log(data);
     try {
-      const response = await axios.put('https://upskilling-egypt.com:3006/api/v1/Users/verify', data)
-      console.log(response);
+      const response = await AuthApi.VerifyApi(data)
       navigate('/login')
       toast.success(response.data.message);
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-      console.log(error);
+      toast.error(error.response.data.message || "Something went wrong");
     }
   }
 

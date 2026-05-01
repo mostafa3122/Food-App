@@ -4,21 +4,24 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { EmailValidation } from '../../../../constants/Validations';
 import { toast } from 'react-toastify';
+import { AuthApi } from '../../../../api';
 
 export default function ForgetPass() {
 
     let { register, formState: { errors, isSubmitting, isValid }, handleSubmit } = useForm();
     const navigate = useNavigate()
     const onSubmit = async (data) => {
-        console.log(data);
+      
         try {
-            const response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Reset/Request', data)
-            console.log(response);
+            // const response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Reset/Request', data)
+            const response = await AuthApi.ForgetApi(data)
+
+            
             navigate('/reset-password')
             toast.success("Your request is being processed, please check your email");
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+    
+            toast.error(error.response.data.message || "Something went wrong");
         }
     }
     return (

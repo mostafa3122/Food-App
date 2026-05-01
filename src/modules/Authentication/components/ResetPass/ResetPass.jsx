@@ -4,22 +4,20 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { AuthApi } from '../../../../api';
 
 export default function ResetPass() {
     const [showPass, setShowPass] = useState(false);
     const [showConfirmPass, setShowConfirmPass] = useState(false);
-    let {watch, register, formState: { errors, isSubmitting,isValid }, handleSubmit } = useForm();
+    let { watch, register, formState: { errors, isSubmitting, isValid }, handleSubmit } = useForm();
     const navigate = useNavigate()
     const onSubmit = async (data) => {
-        console.log(data);
         try {
-            const response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Reset', data)
-            console.log(response);
+            const response = await AuthApi.ResetApi(data)
             navigate('/login')
             toast.success(response.data.message);
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error.response.data.message || "Something went wrong");
         }
     }
 
@@ -70,7 +68,7 @@ export default function ResetPass() {
                         <i className="fa-solid fa-lock"></i>
                     </span>
                     <div className="input-line my-1"></div>
-                    <input {...register("confirmPassword",ConfirmPasswordValidation(watch))} type={showConfirmPass ? "text" : "password"} placeholder='Confirm New Password' className="form-control p-2" aria-describedby="confirmVewPasswordHelpBlock" />
+                    <input {...register("confirmPassword", ConfirmPasswordValidation(watch))} type={showConfirmPass ? "text" : "password"} placeholder='Confirm New Password' className="form-control p-2" aria-describedby="confirmVewPasswordHelpBlock" />
                     <button className="aye-icon" type="button" onClick={() => setShowConfirmPass(!showConfirmPass)}>
                         <i className={`fa ${showConfirmPass ? " fa-eye-slash" : "fa-eye"}`} />
                     </button>
