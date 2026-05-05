@@ -1,4 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
+import { useEffect, useState } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
@@ -10,13 +11,13 @@ import VerifyAccount from './modules/Authentication/components/VerifyAccount/Ver
 import CategoriesList from './modules/Categories/components/CategoriesList/CategoriesList';
 import Dashboard from './modules/Dashboard/components/Dashboard/Dashboard';
 import FavList from './modules/Favourites/components/FavList/FavList';
+import RecipesData from './modules/Recipes/components/RecipesData/RecipesData';
 import RecipesList from './modules/Recipes/components/RecipesList/RecipesList';
 import AuthLayout from './modules/Shared/components/AuthLayout/AuthLayout';
 import MasterLayout from './modules/Shared/components/MasterLayout/MasterLayout';
 import NotFound from './modules/Shared/components/NotFound/NotFound';
-import UserList from './modules/Users/components/UserList/UserList';
-import { useEffect, useState } from 'react';
 import ProtectedRoute from './modules/Shared/components/ProtectedRoute/ProtectedRoute';
+import UserList from './modules/Users/components/UserList/UserList';
 function App() {
 
   const [loginData, setLoginData] = useState(null);
@@ -25,7 +26,7 @@ function App() {
     let encodedToken = localStorage.getItem("token");
     let decodedtoken = jwtDecode(encodedToken);
     setLoginData(decodedtoken);
-  
+
   }
   // in any re-render data will disappear so we use useEffect 
   useEffect(() => {
@@ -56,6 +57,7 @@ function App() {
           { index: true, element: <Dashboard loginData={loginData} setLoginData={setLoginData} /> },
           { path: '', element: <Dashboard loginData={loginData} setLoginData={setLoginData} /> },
           { path: 'recipes', element: <RecipesList /> },
+          { path: 'recipe-data', element: <RecipesData /> },
           { path: 'categories', element: <CategoriesList /> },
           { path: 'favourites', element: <FavList /> },
           { path: 'users', element: <UserList /> },
@@ -66,8 +68,8 @@ function App() {
   )
   return (
     <>
-      <RouterProvider router={routes}></RouterProvider>
       <ToastContainer position="top-right" autoClose={2000} />
+      <RouterProvider router={routes}></RouterProvider>
     </>
   )
 }

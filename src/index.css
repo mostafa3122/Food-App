@@ -86,6 +86,7 @@ form .btn-success {
 /* sidebar */
 .sidebar-container .ps-sidebar-container {
     height: 100vh;
+    z-index: 999999999 !important;
     border-top-right-radius: 58px;
     color: #fff;
     background: rgba(31, 38, 62, 1) !important;
@@ -170,15 +171,8 @@ form .btn-success {
     width: 550px !important;
 }
 
-.modal-body {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
+ .modal-body {
     color: rgba(73, 73, 73, 1);
-
     h3 {
         font-size: 20px;
     }
@@ -280,4 +274,16 @@ form .btn-success {
 .action-btn:hover {
     background: #198754;
     color: white;
+}
+
+.form-control, .form-select {
+    background-color: rgba(247, 247, 247, 1) !important;
+    border: none !important;
+}
+
+.input-file {
+    border-radius: 8px;
+    width: 100% !important;
+    background: rgba(241, 255, 240, 1) !important;
+    border: dashed 1px green !important;
 }

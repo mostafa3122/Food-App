@@ -3,10 +3,7 @@ import { toast } from "react-toastify";
 
 const axiosClient = axios.create({
   baseURL: "https://upskilling-egypt.com:3006/api/v1",
-  timeout: 5000,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  timeout: 10000,
 });
 axiosClient.interceptors.request.use(
   (config) => {

@@ -11,13 +11,12 @@ export default function Login({ saveLoginData }) {
     const onSubmit = async (data) => {
         try {
             const response = await AuthApi.LoginApi(data)
-            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('token', response?.data?.token)
             await saveLoginData()//save token to reuse again 
             toast.success("Logged in successful");
             navigate('/dashboard')
         } catch (error) {
-            
-            toast.error(error.response.data.message || "Something went wrong");
+            toast.error(error?.response?.data?.message || "Something went wrong");
         }
     }
 

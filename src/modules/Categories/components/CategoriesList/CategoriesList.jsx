@@ -1,74 +1,115 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../../../Shared/components/Header/Header'
-import headerMan from '../../../../assets/images/header-man.png'
-import { DeleteCategory, GetCategories } from '../../../../api/modules/categories'
-import NoData from '../../../Shared/components/NoData/NoData'
-import noData from '../../../../assets/images/no-data.png'
-
-// Modal
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify'
+import { CreateGategory, DeleteCategory, GetCategories, UpdateCategory } from '../../../../api/modules/categories'
+import headerMan from '../../../../assets/images/header-man.png'
+import TableHeader from '../../../Shared/TableHeader/TableHeader'
+import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
+import Header from '../../../Shared/components/Header/Header'
+import NoData from '../../../Shared/components/NoData/NoData'
+import AddCategoryModal from '../AddCategoryModal/AddCategoryModal'
+import EditCategoryModal from '../EditCategoryModal/EditCategoryModal'
 
 export default function CategoriesList() {
 
     const [categoriesList, setCategoriesList] = useState([])
 
-    // Modal
-    const [showModal, setShowModal] = useState(false)
-    const [selectedId, setSelectedId] = useState(null)
-
+    /* Get Categories */
     const getList = async (data) => {
         try {
             const response = await GetCategories(data)
             setCategoriesList(response.data.data);
         } catch (error) {
-            toast.error("Something Went wrong")        }
+            toast.error("Something Went wrong")
+        }
     }
-    const handleDeleteClick = (id) => {
-        setSelectedId(id)
+    // Delete Modal
+    const [showModal, setShowModal] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null);
+    const handleClose = () => setShowModal(false); // bte2fel elmodal
+    /* Handel delete click >and> open madal */
+    const handleDeleteClick = (item) => {
+        setSelectedItem(item)
         setShowModal(true)
     }
-    const deleteCategory = async (id) => {
+    /*  Delete Category  >and> close madal*/
+    const deleteCategory = async () => {
         try {
-            const response = await DeleteCategory(id)
-            toast.success("Item Deleted Successfuly")
+            await DeleteCategory(selectedItem.id)
+            toast.success(`${selectedItem.name} Deleted Successfuly`)
+            handleClose()
             getList()
             // setCategoriesList(prev => prev.filter(item => item.id !== id))
         } catch (error) {
-            toast.success("Something Went wrong")
-        } finally {
-            setShowModal(false)
-            setSelectedId(null)
+            console.log(error)
+            toast.error("Something Went wrong")
         }
     }
+    /* Add Category Modal */
+    const [showAddModal, setShowAddModal] = useState(false)
+    const handleAddClose = () => setShowAddModal(false); // bte2fel elmodal
+
+    /* Handel Add click >> open madal */
+    const handleAddCategory = async (data) => {
+        await addCategory(data)
+    }
+
+    /*  Add Category  >> close madal*/
+    const addCategory = async (data) => {
+        try {
+            await CreateGategory(data)
+            toast.success("Category Added Successfully")
+            handleAddClose()
+            getList()
+        } catch (error) {
+            console.log(error)
+            toast.error("Something Went wrong")
+        }
+    }
+     /* Edit Category Modal  */
+    const [showEditModal, setShowEditModal] = useState(false)
+    const handleEditClose = () => setShowEditModal(false)
+    /* Handel Edit click >> open madal */
+    const handleEditClick = (item) => {
+        setSelectedItem(item)
+        setShowEditModal(true)
+    }
+    /*  Edit Category  >> close madal*/
+    const editCategory = async (data) => {
+        try {
+            await UpdateCategory(selectedItem.id, data)
+            toast.success("Category Updated Successfully")
+            handleEditClose()
+            getList()
+        } catch (error) {
+            toast.error("Something Went wrong")
+        }
+    }
+    /* Call Function */
     useEffect(() => {
         getList()
     }, []);
     return (
         <>
             {/* header */}
-            <Header title={<>Categories <span>Items</span></>}
-                description={"You can now add your items that any user can order it from the Application and you can edit"} imgUrl={headerMan}
+            <Header
+                title={<>Categories <span>Items</span></>}
+                description={<> You can now add your items that any user can order it from <br /> the Application and you can edit</>}
+                imgUrl={headerMan}
             />
 
             <div className="container-fluid mt-4 ">
-            {/* sub header */}
-                <div className="row ">
-                    <div className="col-md-8">
+                {/* sub header */}
+                {/* <TableHeader subHeaderTitle={"Categories"} onAddClick={() => setShowModal(true)} /> */}
+                <TableHeader
+                    subHeaderTitle={"Categories"}
+                    onAddClick={() => setShowAddModal(true)}
+                />
 
-                        <h6 className='mb-0'>Categories Table Details</h6>
-                        <p >You can check all details</p>
-                    </div>
-
-                    <div className="col-md-4 ">
-                        <div className="d-flex justify-content-end">
-                            <button className='btn bg-success rounded rounded-3  px-5 py-2 d-flex justify-content-center gap-2 text-decoration-none text-white align-items-center'>
-                                Add New Item
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <AddCategoryModal
+                    show={showAddModal}
+                    onClose={handleAddClose}
+                    onConfirm={handleAddCategory}
+                />
                 {/* table data */}
                 <div className="table-container">
                     {categoriesList.length > 0 ?
@@ -99,13 +140,20 @@ export default function CategoriesList() {
                                                 <ul className="dropdown-menu shadow border-0 rounded-4">
                                                     <li>
                                                         <button className="dropdown-item">
+                                                            <i className="fa fa-eye text-success me-2"></i>
+                                                            View
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        
+                                                        <button onClick={() => handleEditClick(item)} className="dropdown-item">
                                                             <i className="fa fa-edit text-success me-2"></i>
                                                             Edit
                                                         </button>
                                                     </li>
 
                                                     <li>
-                                                        <button onClick={() => { handleDeleteClick(item.id) }} className="dropdown-item">
+                                                        <button onClick={() => handleDeleteClick(item)} className="dropdown-item">
                                                             <i className="fa fa-trash-can text-success me-2"></i>
                                                             Delete
                                                         </button>
@@ -121,25 +169,21 @@ export default function CategoriesList() {
 
                 </div>
             </div>
-            {/* modal */}
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-
-                </Modal.Header>
-                <Modal.Body>
-                    <img src={noData} alt="noData" />
-                    <h5 className='fw-bold'>Delete This Item ?</h5>
-                    <p>are you sure you want to delete this item ? if you are sure just click on delete it</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    {/* <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Cancel
-                    </Button> */}
-                    <Button variant="danger" onClick={() => deleteCategory(selectedId)}>
-                        Delete this item
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {/* modal for delet */}
+            <DeleteConfirmation
+                show={showModal}
+                onClose={handleClose}
+                onConfirm={deleteCategory}
+                deleteItem={"Category"}
+                itemName={selectedItem?.name}
+            />
+            {/* modal for edit */}
+            <EditCategoryModal
+                show={showEditModal}
+                onClose={handleEditClose}
+                onConfirm={editCategory}
+                selectedItem={selectedItem}
+            />
         </>
     )
 }
