@@ -14,10 +14,8 @@ export default function UserList() {
         try {
             const response = await GetUsers(data)
             setUsersList(response.data.data);
-            console.log(response.data.data);
         } catch (error) {
-            // toast.error("Something Went wrong")
-            console.log(error);
+            toast.error("Something Went wrong")
         }
     }
     // Delete Modal
@@ -36,10 +34,9 @@ export default function UserList() {
             toast.success(`${selectedItem.userName} Deleted Successfuly`)
             handleClose()
             getUsers()
-           
+
         } catch (error) {
-            console.log(error.response)
-            toast.error("Something Went wrong")
+            toast.error(error?.response?.data?.message || "Something went wrong");
         }
     }
     useEffect(() => {

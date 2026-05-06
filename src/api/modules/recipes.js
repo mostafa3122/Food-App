@@ -13,6 +13,6 @@ export const CreateRecipe = (data) => {
 // export const GetRecipeById = (id) => {
 //   return axiosClient.get(`/Recipe/${id}`);
 // };
-// export const UpdateRecipe = (data) => {
-//   return axiosClient.put("/Recipe", data);
-// };
+export const UpdateRecipe = (id, data) => {
+  return axiosClient.put(`/Recipe/${id}`, data);
+};

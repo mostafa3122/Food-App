@@ -8,13 +8,15 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify'
 import noRecipe from '../../../../assets/images/no-recipe.jpg'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
 import TableHeader from '../../../Shared/TableHeader/TableHeader'
 
 // import NoData from '../../../Shared/components/NoData/NoData'
 
 export default function RecipesList() {
+    const navigate = useNavigate()
+
     const [recipesList, setRecipesList] = useState([])
 
     // Modal
@@ -25,7 +27,6 @@ export default function RecipesList() {
         try {
             const response = await GetRecipes(data)
             setRecipesList(response.data.data)
-
         } catch (error) {
             toast.error("Something went wrong")
         }
@@ -48,6 +49,7 @@ export default function RecipesList() {
     useEffect(() => {
         getRecipes()
     }, []);
+    
     return (
         <>
             <Header
@@ -56,7 +58,18 @@ export default function RecipesList() {
                 imgClassName={""} />
 
             <div className="container-fluid mt-4 ">
-                <TableHeader subHeaderTitle={"Recipes"} subHeaderPath={"/dashboard/recipe-data"} />
+                <TableHeader subHeaderTitle={"Recipes"} subHeaderPath={"/dashboard/add-recipe"} />
+                <div className="row px-3 mb-3 gap-2">
+                    <div className="col-md-7  rounded-2  py-2  ">
+                        <input type="search" name="" placeholder=' search here' className='form-control' id="" />
+                    </div>
+                    <div className="col-md-2 rounded-2  py-2 ">
+                        <input type="search" name="" placeholder=' category' className='form-control' id="" />
+                    </div>
+                    <div className="col-md-2 rounded-2  py-2 ">
+                        <input type="search" name="" placeholder=' tag' className='form-control' id="" />
+                    </div>
+                </div>
                 <div className="table-container">
                     {recipesList.length > 0 ?
                         <table className="table custom-table  table-striped  ">
@@ -103,7 +116,8 @@ export default function RecipesList() {
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        <button className="dropdown-item">
+                                                                                               {/* use router state to send item for using in edit  */}
+                                                        <button onClick={() => navigate(`/dashboard/edit-recipe/${item.id}`, { state: item })} className="dropdown-item">
                                                             <i className="fa fa-edit text-success me-2"></i>
                                                             Edit
                                                         </button>

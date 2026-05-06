@@ -24,13 +24,13 @@ export default function EditCategoryModal({ show, onClose, onConfirm, selectedIt
                         <input {...register("name", { required: "Name is Required" })}
                             type="text"
                             placeholder='Category Name'
-                            defaultValue={selectedItem?.name} // 👈
+                            defaultValue={selectedItem?.name}
                             className="form-control p-2" />
                     </div>
                     {errors?.name && <span className='text-danger'>{errors?.name?.message}</span>}
                     <div className="border-top border-2 mt-2 pt-4 d-flex justify-content-end">
                         <button type="submit" className='btn btn-success px-3 py-2'>
-                            {isSubmitting ? "Saving..." : "Save Changes"}
+                            {isSubmitting ? "Saving..." : "Save"}
                         </button>
                     </div>
                 </form>

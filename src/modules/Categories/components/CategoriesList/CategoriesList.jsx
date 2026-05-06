@@ -40,7 +40,6 @@ export default function CategoriesList() {
             getList()
             // setCategoriesList(prev => prev.filter(item => item.id !== id))
         } catch (error) {
-            console.log(error)
             toast.error("Something Went wrong")
         }
     }
@@ -61,7 +60,6 @@ export default function CategoriesList() {
             handleAddClose()
             getList()
         } catch (error) {
-            console.log(error)
             toast.error("Something Went wrong")
         }
     }

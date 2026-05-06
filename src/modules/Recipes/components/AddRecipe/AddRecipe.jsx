@@ -7,9 +7,9 @@ import { GetCategories } from '../../../../api/modules/categories'
 import { GetTags } from '../../../../api/modules/tags'
 import { toast } from 'react-toastify'
 
-export default function RecipesData() {
+export default function AddRecipe() {
 
-    const { register, watch, formState: { errors, isSubmitting }, reset, handleSubmit } = useForm()
+    const { register, formState: { errors, isSubmitting }, reset, handleSubmit } = useForm()
     const navigate = useNavigate()
     const [categoriesList, setCategoriesList] = useState([])
     const [tagsList, setTagsList] = useState([])
@@ -28,9 +28,7 @@ export default function RecipesData() {
         try {
             const response = await GetTags()
             setTagsList(response?.data);
-            console.log(response.data);
         } catch (error) {
-            console.log(error)
             toast.error("Something Went wrong")
         }
     }
@@ -43,25 +41,21 @@ export default function RecipesData() {
         formData.append("categoriesIds", data.categoriesIds)
         formData.append("description", data.description)
         formData.append("recipeImage", data.recipeImage[0])
-        // if (data.recipeImage && data.recipeImage.length > 0) {
-        //     formData.append("recipeImage", data.recipeImage[0])
-        // }
         return formData;
     }
 
-    
+
     /* Handle Add Recipe */
     const onSubmit = async (data) => {
         let recipeData = appendToFormData(data)
         try {
-            
+
             await CreateRecipe(recipeData)
             reset()
             toast.success("Recipe Added successful");
             navigate('/dashboard/recipes')
         } catch (error) {
             toast.error("Something went wrong");
-            console.log(error.response)
         }
     }
     useEffect(() => {
@@ -72,7 +66,7 @@ export default function RecipesData() {
         <>
             <SubHeader
                 subTitle={"Fill The"}
-                subDescription={"you can now fill the meals easily using the table and form , click here and sill it with the table !"}
+                subDescription={<>you can now fill the meals easily using the table and form ,<br /> click here and sill it with the table !</>}
                 btnText={"All Recipes"}
                 btnUrl={"/dashboard/Recipes"}
             />
@@ -97,7 +91,7 @@ export default function RecipesData() {
                                 <option key={tag?.id} value={tag?.id}>
                                     {tag?.name}
                                 </option>
-                                
+
                             ))}
                         </select>
                     </div>
@@ -152,7 +146,7 @@ export default function RecipesData() {
                             accept="image/*"
                         />
                         {/* Custom Button */}
-                        <label htmlFor="fileInput" className="btn fs-6  d-flex flex-column input-file align-items-center gap-2" style={{ cursor: 'pointer', width: 'fit-content' }}>
+                        <label htmlFor="fileInput" className="btn fs-6 py-4  d-flex flex-column input-file align-items-center gap-2" style={{ cursor: 'pointer', width: 'fit-content' }}>
                             <i className="fa-solid fa-arrow-up-from-bracket"></i>
                             <span>Drag & Drop or <span className='text-success fw-bolder'>Choose a Item Image</span> to Upload</span>
                         </label>
@@ -160,7 +154,7 @@ export default function RecipesData() {
 
                     <div className="mb-3 d-flex justify-content-end ">
                         <button onClick={() => navigate('/dashboard/recipes')} className='btn px-4 py-2 btn-outline-success mx-3'>Cancel</button>
-                        <button className='btn btn-success'>
+                        <button className='btn px-3 btn-success'>
                             {isSubmitting ? "Saving..." : "Save"}
                         </button>
                     </div>

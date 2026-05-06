@@ -11,7 +11,8 @@ import VerifyAccount from './modules/Authentication/components/VerifyAccount/Ver
 import CategoriesList from './modules/Categories/components/CategoriesList/CategoriesList';
 import Dashboard from './modules/Dashboard/components/Dashboard/Dashboard';
 import FavList from './modules/Favourites/components/FavList/FavList';
-import RecipesData from './modules/Recipes/components/RecipesData/RecipesData';
+import AddRecipe from './modules/Recipes/components/AddRecipe/AddRecipe';
+import EditRecipe from './modules/Recipes/components/EditRecipe/EditRecipe';
 import RecipesList from './modules/Recipes/components/RecipesList/RecipesList';
 import AuthLayout from './modules/Shared/components/AuthLayout/AuthLayout';
 import MasterLayout from './modules/Shared/components/MasterLayout/MasterLayout';
@@ -57,7 +58,8 @@ function App() {
           { index: true, element: <Dashboard loginData={loginData} setLoginData={setLoginData} /> },
           { path: '', element: <Dashboard loginData={loginData} setLoginData={setLoginData} /> },
           { path: 'recipes', element: <RecipesList /> },
-          { path: 'recipe-data', element: <RecipesData /> },
+          { path: 'add-recipe', element: <AddRecipe /> },
+          { path: 'edit-recipe/:id', element: <EditRecipe /> },
           { path: 'categories', element: <CategoriesList /> },
           { path: 'favourites', element: <FavList /> },
           { path: 'users', element: <UserList /> },
