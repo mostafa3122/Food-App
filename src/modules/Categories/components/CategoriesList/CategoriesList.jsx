@@ -8,6 +8,7 @@ import Header from '../../../Shared/components/Header/Header'
 import NoData from '../../../Shared/components/NoData/NoData'
 import AddCategoryModal from '../AddCategoryModal/AddCategoryModal'
 import EditCategoryModal from '../EditCategoryModal/EditCategoryModal'
+import CategoriesData from '../CategoriesData/CategoriesData'
 
 export default function CategoriesList() {
 
@@ -63,7 +64,7 @@ export default function CategoriesList() {
             toast.error("Something Went wrong")
         }
     }
-     /* Edit Category Modal  */
+    /* Edit Category Modal  */
     const [showEditModal, setShowEditModal] = useState(false)
     const handleEditClose = () => setShowEditModal(false)
     /* Handel Edit click >> open madal */
@@ -82,6 +83,16 @@ export default function CategoriesList() {
             toast.error("Something Went wrong")
         }
     }
+
+    /* Veiw Category */
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    const handleViewClick = (category) => {
+        setSelectedCategory(category);
+        setShowDetailsModal(true);
+    };
+
     /* Call Function */
     useEffect(() => {
         getList()
@@ -109,7 +120,7 @@ export default function CategoriesList() {
                     onConfirm={handleAddCategory}
                 />
                 {/* table data */}
-                <div className="table-container">
+                <div className="table-container table-responsive">
                     {categoriesList.length > 0 ?
                         <table className="table custom-table   ">
                             <thead className='custom-head'>
@@ -122,11 +133,12 @@ export default function CategoriesList() {
                             </thead>
                             <tbody>
                                 {categoriesList.map(item => (
-                                    <tr className='py-2 px-3' key={item.id}>
-                                        <th scope="row">{item.id}</th>
-                                        <td>{item.name}</td>
+                                    <tr className='py-2 px-3' key={item?.id}>
+                                        <th scope="row">{item?.id}</th>
+                                        <td>{item?.name}</td>
                                         {/* <td>{item.creationDate}</td> */}
-                                        <td>{new Date(item?.creationDate).toLocaleDateString()}</td>
+                                        {/* to make data as known >> d/m/y */}
+                                        <td>{new Date(item?.creationDate).toLocaleDateString('en-GB')}</td>
                                         <td>
                                             <div className="dropdown ">
                                                 <button
@@ -137,13 +149,13 @@ export default function CategoriesList() {
                                                 </button>
                                                 <ul className="dropdown-menu shadow border-0 rounded-4">
                                                     <li>
-                                                        <button className="dropdown-item">
+                                                        <button onClick={() => handleViewClick(item)} className="dropdown-item">
                                                             <i className="fa fa-eye text-success me-2"></i>
                                                             View
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        
+
                                                         <button onClick={() => handleEditClick(item)} className="dropdown-item">
                                                             <i className="fa fa-edit text-success me-2"></i>
                                                             Edit
@@ -181,6 +193,21 @@ export default function CategoriesList() {
                 onClose={handleEditClose}
                 onConfirm={editCategory}
                 selectedItem={selectedItem}
+            />
+            {/* View category */}
+            <CategoriesData
+                show={showDetailsModal}
+                category={selectedCategory}
+                onClose={() => setShowDetailsModal(false)}
+                onEdit={(item) => {
+                    setShowDetailsModal(false);
+                    handleEditClick(item);
+                }}
+
+                onDelete={(item) => {
+                    setShowDetailsModal(false);
+                    handleDeleteClick(item);
+                }}
             />
         </>
     )

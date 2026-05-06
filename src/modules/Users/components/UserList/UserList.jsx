@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../../../Shared/components/Header/Header'
-import headerMan from '../../../../assets/images/header-man.png'
-import TableHeader from '../../../Shared/TableHeader/TableHeader'
-import NoData from '../../../Shared/components/NoData/NoData'
-import { DeletUsersById, GetUsers } from '../../../../api/modules/users'
-import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
 import { toast } from 'react-toastify'
+import { DeletUsersById, GetUsers } from '../../../../api/modules/users'
+import headerMan from '../../../../assets/images/header-man.png'
+import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
+import Header from '../../../Shared/components/Header/Header'
+import NoData from '../../../Shared/components/NoData/NoData'
+import UserData from '../UserData/UserData'
 
 export default function UserList() {
     const [usersList, setUsersList] = useState([])
@@ -39,6 +39,14 @@ export default function UserList() {
             toast.error(error?.response?.data?.message || "Something went wrong");
         }
     }
+    /* Veiw Category */
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const handleViewClick = (user) => {
+        setSelectedUser(user);
+        setShowDetailsModal(true);
+    };
     useEffect(() => {
         getUsers()
     }, []);
@@ -58,7 +66,7 @@ export default function UserList() {
                 </div>
             </div>
             {/* table data */}
-            <div className="table-container">
+            <div className="table-container table-responsive">
                 {usersList.length > 0 ?
                     <table className="table custom-table   ">
                         <thead className='custom-head'>
@@ -90,7 +98,7 @@ export default function UserList() {
                                             </button>
                                             <ul className="dropdown-menu shadow border-0 rounded-4">
                                                 <li>
-                                                    <button className="dropdown-item">
+                                                    <button onClick={() => handleViewClick(item)} className="dropdown-item">
                                                         <i className="fa fa-eye text-success me-2"></i>
                                                         View
                                                     </button>
@@ -117,6 +125,15 @@ export default function UserList() {
                 onConfirm={deleteUser}
                 deleteItem={"User"}
                 itemName={selectedItem?.userName}
+            />
+            <UserData
+                show={showDetailsModal}
+                user={selectedUser}
+                onClose={() => setShowDetailsModal(false)}
+                onDelete={(item) => {
+                    setShowDetailsModal(false);
+                    handleDeleteClick(item);
+                }}
             />
 
         </div>

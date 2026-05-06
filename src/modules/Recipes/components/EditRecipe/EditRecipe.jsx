@@ -7,6 +7,7 @@ import { GetTags } from '../../../../api/modules/tags'
 import { toast } from 'react-toastify'
 import SubHeader from '../../../Shared/SubHeader/SubHeader'
 
+import noRecipe from '../../../../assets/images/no-recipe.jpg'
 
 
 /** the flow for editing recipe
@@ -183,8 +184,12 @@ export default function EditRecipe() {
                             <span>Drag & Drop or <span className='text-success fw-bolder'>Choose a Item Image</span> to Upload</span>
                         </label>
                     </div>
-                    <div className="w-25 rounded-5">
-                        <img src={`https://upskilling-egypt.com:3006/${recipeToEdit?.imagePath}`} alt="recipe" className='img-fluid rounded-4' />
+                    <div className="w-25 mx-auto rounded-5 text-center">
+                        {recipeToEdit?.imagePath
+                            ? < img src={`https://upskilling-egypt.com:3006/${recipeToEdit?.imagePath}`} alt="recipe" className='img-fluid w-50 rounded-4' />
+                            :
+                            <img className='table-image' src={noRecipe} alt={recipeToEdit?.name} />
+                        }
                     </div>
 
                     <div className="mb-3 d-flex justify-content-end">

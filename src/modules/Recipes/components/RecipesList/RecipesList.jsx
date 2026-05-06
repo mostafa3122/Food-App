@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../../../Shared/components/Header/Header'
-import headerMan from '../../../../assets/images/header-man.png'
 import { DeleteRecipe, GetRecipes } from '../../../../api/modules/recipes'
+import headerMan from '../../../../assets/images/header-man.png'
+import Header from '../../../Shared/components/Header/Header'
 import NoData from '../../../Shared/components/NoData/NoData'
 // Modal
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import noRecipe from '../../../../assets/images/no-recipe.jpg'
-import { Link, useNavigate } from 'react-router-dom'
-import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
 import TableHeader from '../../../Shared/TableHeader/TableHeader'
+import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
+import RecipeData from '../RecipeData/RecipeData'
 
 // import NoData from '../../../Shared/components/NoData/NoData'
 
 export default function RecipesList() {
     const navigate = useNavigate()
 
+   
     const [recipesList, setRecipesList] = useState([])
 
     // Modal
@@ -46,10 +46,25 @@ export default function RecipesList() {
             toast.error("Something Went wrong")
         }
     }
+
+    // view
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+    const handleViewClick = (recipe) => {
+        setSelectedRecipe(recipe);
+        setShowDetailsModal(true);
+    };
+
+    const handleEditFromView = (recipe) => {
+        navigate(`/dashboard/edit-recipe/${recipe.id}`, {
+            state: recipe
+        });
+    };
     useEffect(() => {
         getRecipes()
     }, []);
-    
+
     return (
         <>
             <Header
@@ -59,22 +74,24 @@ export default function RecipesList() {
 
             <div className="container-fluid mt-4 ">
                 <TableHeader subHeaderTitle={"Recipes"} subHeaderPath={"/dashboard/add-recipe"} />
-                <div className="row px-3 mb-3 gap-2">
-                    <div className="col-md-7  rounded-2  py-2  ">
-                        <input type="search" name="" placeholder=' search here' className='form-control' id="" />
+                {/* <div className="row px-3 mb-3 gap-2">
+                    <div className="col-md-7 position-relative rounded-2  py-2  ">
+                        <input type="search" name="" placeholder=' search here' className='form-control'/>
+                        <i className='fa fa-search position-absolute top-50 translate-middle-y ms-2  '></i>
                     </div>
                     <div className="col-md-2 rounded-2  py-2 ">
-                        <input type="search" name="" placeholder=' category' className='form-control' id="" />
+                        <input type="search" name="" placeholder=' category' className='form-control' />
                     </div>
                     <div className="col-md-2 rounded-2  py-2 ">
-                        <input type="search" name="" placeholder=' tag' className='form-control' id="" />
+                        <input type="search" name="" placeholder=' tag' className='form-control' />
                     </div>
-                </div>
-                <div className="table-container">
+                </div> */}
+                <div className="table-container table-responsive">
                     {recipesList.length > 0 ?
-                        <table className="table custom-table  table-striped  ">
+                        <table className="table custom-table  table-striped    ">
                             <thead className='custom-head'>
                                 <tr>
+                                    <th scope="col">ID</th>
                                     <th scope="col">Item Name</th>
                                     <th scope="col">Image</th>
                                     <th scope="col">Price</th>
@@ -87,14 +104,15 @@ export default function RecipesList() {
                             <tbody>
                                 {recipesList.map(item => (
                                     <tr className='py-2 px-3' key={item.id}>
+                                        <td scope="row">{item?.id}</td>
                                         <td scope="row">{item?.name}</td>
                                         <td>
                                             {item.imagePath ?
-                                             <img className='table-image' src={`https://upskilling-egypt.com:3006/${item?.imagePath}`} alt={item?.name} />
-                                              :
-                                            <img className='table-image' src={noRecipe} alt={item?.name}/>
-                                              }
-                                            
+                                                <img className='table-image' src={`https://upskilling-egypt.com:3006/${item?.imagePath}`} alt={item?.name} />
+                                                :
+                                                <img className='table-image' src={noRecipe} alt={item?.name} />
+                                            }
+
                                         </td>
                                         <td>{item?.price}</td>
                                         <td>{item?.description}</td>
@@ -110,13 +128,13 @@ export default function RecipesList() {
                                                 </button>
                                                 <ul className="dropdown-menu shadow border-0 rounded-4">
                                                     <li>
-                                                        <button className="dropdown-item">
+                                                        <button onClick={() => handleViewClick(item)} className="dropdown-item">
                                                             <i className="fa fa-eye text-success me-2"></i>
                                                             View
                                                         </button>
                                                     </li>
                                                     <li>
-                                                                                               {/* use router state to send item for using in edit  */}
+                                                        {/* use router state to send item for using in edit  */}
                                                         <button onClick={() => navigate(`/dashboard/edit-recipe/${item.id}`, { state: item })} className="dropdown-item">
                                                             <i className="fa fa-edit text-success me-2"></i>
                                                             Edit
@@ -146,8 +164,21 @@ export default function RecipesList() {
                 onClose={handleClose}
                 onConfirm={deleteRecipe}
                 deleteItem={"Recipe"}
-
                 itemName={selectedItem?.name}
+            />
+            <RecipeData 
+                show={showDetailsModal}
+                recipe={selectedRecipe}
+                onClose={() => setShowDetailsModal(false)}
+                onEdit={(item) => {
+                    setShowDetailsModal(false);
+                    handleEditFromView(item);
+                }}
+                onDelete={(item) => {
+                    setShowDetailsModal(false);
+                    handleDeleteClick(item);
+                }}
+
             />
         </>
     )
