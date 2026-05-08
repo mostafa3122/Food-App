@@ -12,10 +12,10 @@ export default function NotFound() {
         <img src={logo} alt="auth background" className='w-75' />
       </div>
       <div className="vector position-absolute  bottom-0  end-0">
-        <img src={vector} alt="vector" className="  " />
+        <img src={vector} alt="vector" />
       </div>
       <div className="vector position-absolute  bottom-0  end-0 z-3">
-        <img src={errorImg} alt="404error" className="  " />
+        <img src={errorImg} alt="404error" />
       </div>
       <div className="gear position-absolute  z-3">
         <img src={gear} alt="gear icon" className="w-100" />

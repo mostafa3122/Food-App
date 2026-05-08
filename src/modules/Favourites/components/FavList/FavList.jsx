@@ -15,7 +15,7 @@ export default function FavList() {
   const getFavs = async () => {
     try {
       const response = await GetFavourites()
-      console.log(response);
+  
       setfavList(response?.data?.data);
     } catch (error) {
       toast.error("Something Went wrong")

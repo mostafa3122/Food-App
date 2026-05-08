@@ -24,7 +24,7 @@ export default function RecipeData({ show, onClose, recipe, onEdit, onDelete, fa
             onFavAdded(recipe?.id)
             toast.success("Added to Favourites!")
         } catch (error) {
-            console.log("Create Fav error:", error?.response?.data)
+       
             toast.error("Something went wrong")
         }
     }

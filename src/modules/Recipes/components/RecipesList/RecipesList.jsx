@@ -84,7 +84,7 @@ export default function RecipesList() {
             )
             setFavIds(ids)
         } catch (error) {
-            console.log(error)
+    
         }
     }
     const handleDeleteClick = (item) => {
