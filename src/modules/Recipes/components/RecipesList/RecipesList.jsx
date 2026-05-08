@@ -165,9 +165,9 @@ export default function RecipesList() {
                 <TableHeader subHeaderTitle={"Recipes"} subHeaderPath={"/dashboard/add-recipe"} />
                 <div className="filtration my-2 py-2 ">
                     <div className="container-fluid">
-                        <div className="row gap-3">
+                        <div className="row g-1">
                             {/* search input */}
-                            <div className="col-md-7 rounded">
+                            <div className="col-md-6 rounded">
                                 <input type="text"
                                     className="form-control"
                                     placeholder="Search by name..."
@@ -179,7 +179,7 @@ export default function RecipesList() {
                                 />
                             </div>
                             {/* tags selet */}
-                            <div className="col-md-2 rounded">
+                            <div className="col-md-3 rounded">
                                 <select className="py-2 px-3 form-select"
                                     value={filters.tagId}
                                     onChange={(e) => {
@@ -193,7 +193,7 @@ export default function RecipesList() {
                                 </select>
                             </div>
                             {/* Category select */}
-                            <div className="col-md-2 rounded">
+                            <div className="col-md-3 rounded">
                                 <select className="py-2 px-3 form-select"
                                     value={filters.categoryId}
                                     onChange={(e) => {

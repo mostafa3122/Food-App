@@ -5,13 +5,14 @@ import { toast } from 'react-toastify'
 import { ChangPasswrodApi } from '../../../../api/modules/auth'
 import logo from "../../../../assets/images/auth-logo.png"
 import { PasswordValidation } from '../../../../constants/Validations'
+import { useNavigate } from 'react-router-dom'
 
 export default function ChangePasswordModal({ show, onClose }) {
 
   const [showOldPass, setShowOldPass] = useState(false)
   const [showNewPass, setShowNewPass] = useState(false)
   const [showConfirmPass, setShowConfirmPass] = useState(false)
-
+const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -27,6 +28,7 @@ export default function ChangePasswordModal({ show, onClose }) {
       toast.success("Password changed successfully")
       reset()
       onClose()
+      navigate('/login')
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong"
       )
@@ -64,7 +66,8 @@ export default function ChangePasswordModal({ show, onClose }) {
               type={showOldPass ? "text" : "password"}
               placeholder="Old Password"
               className="form-control p-2"
-              {...register("oldPassword", PasswordValidation, {
+              {...register("oldPassword", {
+                ...PasswordValidation,
                 required: "Old password is required"
               })}
             />
@@ -99,7 +102,8 @@ export default function ChangePasswordModal({ show, onClose }) {
               type={showNewPass ? "text" : "password"}
               placeholder="New Password"
               className="form-control p-2"
-              {...register("newPassword", PasswordValidation, {
+              {...register("newPassword", {
+                ...PasswordValidation,
                 required: "New password is required",
                 minLength: {
                   value: 6,
@@ -138,7 +142,8 @@ export default function ChangePasswordModal({ show, onClose }) {
               type={showConfirmPass ? "text" : "password"}
               placeholder="Confirm New Password"
               className="form-control p-2"
-              {...register("confirmNewPassword", PasswordValidation, {
+              {...register("confirmNewPassword", {
+                ...PasswordValidation, 
                 required: "Confirm password is required",
                 validate: (value) =>
                   value === watch("newPassword")

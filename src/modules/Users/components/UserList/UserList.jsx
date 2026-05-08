@@ -7,6 +7,7 @@ import Header from '../../../Shared/components/Header/Header'
 import NoData from '../../../Shared/components/NoData/NoData'
 import UserData from '../UserData/UserData'
 import PaginationComponent from '../../../Shared/components/Pagination/PaginationComponent'
+import noUser from '../../../../assets/images/user-img.jpg'
 
 export default function UserList() {
     const [usersList, setUsersList] = useState([])
@@ -114,6 +115,7 @@ export default function UserList() {
                         <thead className='custom-head'>
                             <tr>
                                 <th scope="col">ID</th>
+                                <th scope="col">Image</th>
                                 <th scope="col">User Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Creation Date</th>
@@ -125,6 +127,17 @@ export default function UserList() {
                             {usersList.map(item => (
                                 <tr className='py-2 px-3' key={item?.id}>
                                     <th scope="row">{item?.id}</th>
+                                    <td>{item?.imagePath
+                                        ?
+                                        <img
+                                            src={`https://upskilling-egypt.com:3006/${item?.imagePath}`}
+                                            alt={item?.name}
+                                            className=" table-image  "
+                                          
+                                        />
+                                        :
+                                        <img className=' object-fit-cover table-image' src={noUser} alt={item?.name} />
+                                    }</td>
                                     <td>{item?.userName}</td>
                                     <td>{item?.email}</td>
                                     {/* <td>{item.creationDate}</td> */}
