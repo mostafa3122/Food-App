@@ -1,6 +1,6 @@
 import React from 'react'
 import logo from "../../../../assets/images/auth-logo.png"
-import vector from "../../../../assets/images/vector.png"
+import vector from "../../../../assets/images/Vector.png"
 import errorImg from "../../../../assets/images/error-404.png"
 import gear from "../../../../assets/images/gear.png"
 import { Link } from 'react-router-dom'
