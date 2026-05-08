@@ -6,14 +6,29 @@ import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/De
 import Header from '../../../Shared/components/Header/Header'
 import NoData from '../../../Shared/components/NoData/NoData'
 import UserData from '../UserData/UserData'
+import PaginationComponent from '../../../Shared/components/Pagination/PaginationComponent'
 
 export default function UserList() {
     const [usersList, setUsersList] = useState([])
+    /* Pagination */
+    const [pageNumber, setPageNumber] = useState(1) // current page
+    const [pageSize, setPageSize] = useState(5)  // number of elements in page
+    const [totalPages, setTotalPages] = useState(0) // store total pages
+    const [nameInput, setNameInput] = useState('')
+    const [filters, setFilters] = useState({
+        userName: ''
+    })
     /* Get Users */
-    const getUsers = async (data) => {
+    const getUsers = async () => {
         try {
-            const response = await GetUsers(data)
+            const response = await GetUsers({
+                pageNumber,
+                pageSize,
+                userName: filters.userName
+            })
             setUsersList(response.data.data);
+            // save total number of pages 
+            setTotalPages(response.data.totalNumberOfPages)
         } catch (error) {
             toast.error("Something Went wrong")
         }
@@ -48,8 +63,19 @@ export default function UserList() {
         setShowDetailsModal(true);
     };
     useEffect(() => {
+        const timer = setTimeout(() => {
+            setFilters(prev => ({
+                ...prev,
+                userName: nameInput
+            }))
+            setPageNumber(1)
+        }, 500)
+
+        return () => clearTimeout(timer)
+    }, [nameInput])
+    useEffect(() => {
         getUsers()
-    }, []);
+    }, [pageNumber, filters.userName]);
     return (
         <div>
             <Header title={<>Users <span>List</span></>}
@@ -64,7 +90,23 @@ export default function UserList() {
                         <p>You can check all details</p>
                     </div>
                 </div>
+                <div className="filtration my-2 py-2 ">
+                    <div className="container-fluid">
+                        <div className="row gap-3">
+                            {/* search input */}
+                            <div className="col-12 rounded">
+                                <input type="text"
+                                    className="form-control"
+                                    placeholder="Search by name..."
+                                    value={nameInput}
+                                    onChange={(e) => setNameInput(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             {/* table data */}
             <div className="table-container table-responsive">
                 {usersList.length > 0 ?
@@ -117,8 +159,13 @@ export default function UserList() {
                         </tbody>
                     </table>
                     : <NoData />}
-
             </div>
+            {/* pagination */}
+            <PaginationComponent
+                pageNumber={pageNumber}
+                setPageNumber={setPageNumber}
+                totalPages={totalPages}
+            />
             <DeleteConfirmation
                 show={showModal}
                 onClose={handleClose}

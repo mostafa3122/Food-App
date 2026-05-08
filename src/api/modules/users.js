@@ -1,7 +1,7 @@
 import axiosClient from "../axiosClint";
 
-export const GetUsers = (data) => {
-  return axiosClient.get("/Users", data);
+export const GetUsers = (params) => {
+  return axiosClient.get("/Users", { params});
 };
 export const GetUsersById = (id) => {
   return axiosClient.post(`/Users/${id}`);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DeleteRecipe, GetRecipes } from '../../../../api/modules/recipes'
 import headerMan from '../../../../assets/images/header-man.png'
 import Header from '../../../Shared/components/Header/Header'
@@ -6,29 +6,85 @@ import NoData from '../../../Shared/components/NoData/NoData'
 // Modal
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { GetCategories } from '../../../../api/modules/categories'
+import { GetFavourites } from '../../../../api/modules/favourites'
+import { GetTags } from '../../../../api/modules/tags'
 import noRecipe from '../../../../assets/images/no-recipe.jpg'
+import { AuthContext } from '../../../../context/AuthContext'
 import TableHeader from '../../../Shared/TableHeader/TableHeader'
 import DeleteConfirmation from '../../../Shared/components/DeleteConfirmation/DeleteConfirmation'
+import PaginationComponent from '../../../Shared/components/Pagination/PaginationComponent'
 import RecipeData from '../RecipeData/RecipeData'
 
 // import NoData from '../../../Shared/components/NoData/NoData'
 
 export default function RecipesList() {
+    const { loginData } = useContext(AuthContext)
+    const [favIds, setFavIds] = useState(new Set())
     const navigate = useNavigate()
-
-   
     const [recipesList, setRecipesList] = useState([])
-
+    /* Pagination */
+    const [pageNumber, setPageNumber] = useState(1) // current page
+    const [pageSize] = useState(5)  // number of elements in page
+    const [totalPages, setTotalPages] = useState(0) // store total pages
     // Modal
     const [showModal, setShowModal] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null);
     const handleClose = () => setShowModal(false);
-    const getRecipes = async (data) => {
+    // filtration 
+    // get categories 
+    //get categories & tags
+    const [nameInput, setNameInput] = useState('') 
+    const [categoriesList, setCategoriesList] = useState([])
+    const [tagsList, setTagsList] = useState([])
+    const [filters, setFilters] = useState({
+        name: '',
+        categoryId: '',
+        tagId: ''
+    })
+    const getCategories = async () => {
         try {
-            const response = await GetRecipes(data)
-            setRecipesList(response.data.data)
+            const response = await GetCategories()
+            setCategoriesList(response?.data?.data)
+        } catch (error) {
+            toast.error("Something Went wrong")
+        }
+    }
+    // get Tags
+    const getTags = async () => {
+        try {
+            const response = await GetTags()
+            setTagsList(response?.data)
+        } catch (error) {
+            toast.error("Something Went wrong")
+        }
+    }
+    // get recipes
+    const getRecipes = async () => {
+        try {
+            const response = await GetRecipes({
+                pageNumber,
+                pageSize,
+                name: filters.name,
+                categoryId: filters.categoryId,
+                tagId: filters.tagId,
+            })
+            setRecipesList(response?.data?.data)
+            // save total number of pages 
+            setTotalPages(response?.data?.totalNumberOfPages)
         } catch (error) {
             toast.error("Something went wrong")
+        }
+    }
+    const getFavIds = async () => {
+        try {
+            const response = await GetFavourites({ pageNumber: 1, pageSize: 100 })
+            const ids = new Set(
+                response?.data?.data?.map(fav => fav?.recipe?.id)
+            )
+            setFavIds(ids)
+        } catch (error) {
+            console.log(error)
         }
     }
     const handleDeleteClick = (item) => {
@@ -37,7 +93,7 @@ export default function RecipesList() {
     }
     const deleteRecipe = async () => {
         try {
-            const response = await DeleteRecipe(selectedItem.id)
+            await DeleteRecipe(selectedItem.id)
             toast.success(`${selectedItem.name} Deleted Successfuly`)
             handleClose()
             getRecipes()
@@ -61,31 +117,101 @@ export default function RecipesList() {
             state: recipe
         });
     };
+    const handleSelectFilter = (key, value) => {
+        setFilters(prev => ({ ...prev, [key]: value }))
+        if (pageNumber !== 1) setPageNumber(1)
+    }
+    useEffect(() => {
+        getCategories()
+        getTags()
+        getFavIds()
+    }, [])
+
+  
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFilters(prev => ({ ...prev, name: nameInput }))
+            if (pageNumber !== 1) setPageNumber(1)
+        }, 500)
+        return () => clearTimeout(timer)
+    }, [nameInput])
+
     useEffect(() => {
         getRecipes()
-    }, []);
+    }, [pageNumber, filters])
 
+   
+    // useEffect(() => {
+    //     getRecipes()
+    //     getFavIds()
+    //     getCategories()
+    //     getTags()
+    // }, [pageNumber, filters.name, filters.categoryId, filters.tagId]);
+
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         getRecipes()
+    //     }, 500)
+
+    //     return () => clearTimeout(timer) 
+    // }, [nameInput])
     return (
         <>
             <Header
                 title={<>Recipes <span>Items</span></>}
                 description={<>You can now add your items that any user can order it from <br /> the Application and you can edit</>} imgUrl={headerMan}
                 imgClassName={""} />
-
             <div className="container-fluid mt-4 ">
                 <TableHeader subHeaderTitle={"Recipes"} subHeaderPath={"/dashboard/add-recipe"} />
-                {/* <div className="row px-3 mb-3 gap-2">
-                    <div className="col-md-7 position-relative rounded-2  py-2  ">
-                        <input type="search" name="" placeholder=' search here' className='form-control'/>
-                        <i className='fa fa-search position-absolute top-50 translate-middle-y ms-2  '></i>
+                <div className="filtration my-2 py-2 ">
+                    <div className="container-fluid">
+                        <div className="row gap-3">
+                            {/* search input */}
+                            <div className="col-md-7 rounded">
+                                <input type="text"
+                                    className="form-control"
+                                    placeholder="Search by name..."
+                                    value={filters.name}
+                                    onChange={(e) => {
+                                        setFilters(prev => ({ ...prev, name: e.target.value }))
+                                        setPageNumber(1)
+                                    }}
+                                />
+                            </div>
+                            {/* tags selet */}
+                            <div className="col-md-2 rounded">
+                                <select className="py-2 px-3 form-select"
+                                    value={filters.tagId}
+                                    onChange={(e) => {
+                                        setFilters(prev => ({ ...prev, tagId: e.target.value }))
+                                        setPageNumber(1)
+                                    }}>
+                                    <option value="">Tag</option>
+                                    {tagsList.map(tag => (
+                                        <option key={tag.id} value={tag.id}>{tag.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            {/* Category select */}
+                            <div className="col-md-2 rounded">
+                                <select className="py-2 px-3 form-select"
+                                    value={filters.categoryId}
+                                    onChange={(e) => {
+                                        setFilters(prev => ({ ...prev, categoryId: e.target.value }))
+                                        setPageNumber(1)
+                                    }}
+                                >
+                                    <option value="">Category</option>
+                                    {categoriesList.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                        </div>
                     </div>
-                    <div className="col-md-2 rounded-2  py-2 ">
-                        <input type="search" name="" placeholder=' category' className='form-control' />
-                    </div>
-                    <div className="col-md-2 rounded-2  py-2 ">
-                        <input type="search" name="" placeholder=' tag' className='form-control' />
-                    </div>
-                </div> */}
+                </div>
+                {/* table data */}
                 <div className="table-container table-responsive">
                     {recipesList.length > 0 ?
                         <table className="table custom-table  table-striped    ">
@@ -122,8 +248,7 @@ export default function RecipesList() {
                                             <div className="dropdown ">
                                                 <button
                                                     className="btn action-btn"
-                                                    data-bs-toggle="dropdown"
-                                                >
+                                                    data-bs-toggle="dropdown" >
                                                     <i className="fa-solid fa-ellipsis"></i>
                                                 </button>
                                                 <ul className="dropdown-menu shadow border-0 rounded-4">
@@ -133,20 +258,26 @@ export default function RecipesList() {
                                                             View
                                                         </button>
                                                     </li>
-                                                    <li>
-                                                        {/* use router state to send item for using in edit  */}
-                                                        <button onClick={() => navigate(`/dashboard/edit-recipe/${item.id}`, { state: item })} className="dropdown-item">
-                                                            <i className="fa fa-edit text-success me-2"></i>
-                                                            Edit
-                                                        </button>
-                                                    </li>
+                                                    {loginData?.userGroup == "SuperAdmin"
+                                                        ?
+                                                        <>
+                                                            <li>
+                                                                {/* use router state to send item for using in edit  */}
+                                                                <button onClick={() => navigate(`/dashboard/edit-recipe/${item.id}`, { state: item })} className="dropdown-item">
+                                                                    <i className="fa fa-edit text-success me-2"></i>
+                                                                    Edit
+                                                                </button>
+                                                            </li>
 
-                                                    <li>
-                                                        <button onClick={() => { handleDeleteClick(item) }} className="dropdown-item">
-                                                            <i className="fa fa-trash-can text-success me-2"></i>
-                                                            Delete
-                                                        </button>
-                                                    </li>
+                                                            <li>
+                                                                <button onClick={() => { handleDeleteClick(item) }} className="dropdown-item">
+                                                                    <i className="fa fa-trash-can text-success me-2"></i>
+                                                                    Delete
+                                                                </button>
+                                                            </li>
+                                                        </>
+                                                        : <></>
+                                                    }
                                                 </ul>
                                             </div>
                                         </td>
@@ -155,8 +286,13 @@ export default function RecipesList() {
                             </tbody>
                         </table>
                         : <NoData />}
-
                 </div>
+                {/* pagination */}
+                <PaginationComponent
+                    pageNumber={pageNumber}
+                    setPageNumber={setPageNumber}
+                    totalPages={totalPages}
+                />
             </div>
             {/* modal */}
             <DeleteConfirmation
@@ -166,7 +302,7 @@ export default function RecipesList() {
                 deleteItem={"Recipe"}
                 itemName={selectedItem?.name}
             />
-            <RecipeData 
+            <RecipeData
                 show={showDetailsModal}
                 recipe={selectedRecipe}
                 onClose={() => setShowDetailsModal(false)}
@@ -178,7 +314,8 @@ export default function RecipesList() {
                     setShowDetailsModal(false);
                     handleDeleteClick(item);
                 }}
-
+                favIds={favIds}
+                onFavAdded={(id) => setFavIds(prev => new Set([...prev, id]))}
             />
         </>
     )

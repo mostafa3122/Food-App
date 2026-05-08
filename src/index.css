@@ -86,7 +86,6 @@ form .btn-success {
 /* sidebar */
 .sidebar-container .ps-sidebar-container {
     height: 100vh;
-    z-index: 999999999 !important;
     border-top-right-radius: 58px;
     color: #fff;
     background: rgba(31, 38, 62, 1) !important;

@@ -9,16 +9,34 @@ import NoData from '../../../Shared/components/NoData/NoData'
 import AddCategoryModal from '../AddCategoryModal/AddCategoryModal'
 import EditCategoryModal from '../EditCategoryModal/EditCategoryModal'
 import CategoriesData from '../CategoriesData/CategoriesData'
+import PaginationComponent from '../../../Shared/components/Pagination/PaginationComponent'
 
 export default function CategoriesList() {
 
     const [categoriesList, setCategoriesList] = useState([])
 
+
+    /* Pagination */
+    const [pageNumber, setPageNumber] = useState(1) // current page
+    const [pageSize, setPageSize] = useState(5)  // number of elements in page
+    const [totalPages, setTotalPages] = useState(0) // store total pages
+    /* filtration */
+
+    const [nameInput, setNameInput] = useState('')
+    const [filters, setFilters] = useState({
+        name: ''
+    })
     /* Get Categories */
-    const getList = async (data) => {
+    const getList = async () => {
         try {
-            const response = await GetCategories(data)
+            const response = await GetCategories({
+                pageNumber,
+                pageSize,
+                name: filters.name
+            })
             setCategoriesList(response.data.data);
+            // save total number of pages 
+            setTotalPages(response.data.totalNumberOfPages)
         } catch (error) {
             toast.error("Something Went wrong")
         }
@@ -95,8 +113,20 @@ export default function CategoriesList() {
 
     /* Call Function */
     useEffect(() => {
+        const timer = setTimeout(() => {
+            setFilters(prev => ({
+                ...prev,
+                name: nameInput
+            }))
+            setPageNumber(1)
+        }, 500)
+
+        return () => clearTimeout(timer)
+    }, [nameInput])
+    useEffect(() => {
         getList()
-    }, []);
+    }, [pageNumber, filters.name]);
+
     return (
         <>
             {/* header */}
@@ -113,7 +143,23 @@ export default function CategoriesList() {
                     subHeaderTitle={"Categories"}
                     onAddClick={() => setShowAddModal(true)}
                 />
+                <div className="filtration my-2 py-2 ">
+                    <div className="container-fluid">
+                        <div className="row gap-3">
+                            {/* search input */}
+                            <div className="col-12 rounded">
+                                <input type="text"
+                                    className="form-control"
+                                    placeholder="Search by name..."
+                                    value={nameInput}
+                                    onChange={(e) => setNameInput(e.target.value)}
+                                />
+                            </div>
 
+
+                        </div>
+                    </div>
+                </div>
                 <AddCategoryModal
                     show={showAddModal}
                     onClose={handleAddClose}
@@ -178,6 +224,12 @@ export default function CategoriesList() {
                         : <NoData />}
 
                 </div>
+                {/* pagination */}
+                <PaginationComponent
+                    pageNumber={pageNumber}
+                    setPageNumber={setPageNumber}
+                    totalPages={totalPages}
+                />
             </div>
             {/* modal for delet */}
             <DeleteConfirmation
@@ -203,7 +255,6 @@ export default function CategoriesList() {
                     setShowDetailsModal(false);
                     handleEditClick(item);
                 }}
-
                 onDelete={(item) => {
                     setShowDetailsModal(false);
                     handleDeleteClick(item);

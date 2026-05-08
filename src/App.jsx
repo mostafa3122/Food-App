@@ -1,5 +1,3 @@
-import { jwtDecode } from 'jwt-decode';
-import { useEffect, useState } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
@@ -21,20 +19,6 @@ import ProtectedRoute from './modules/Shared/components/ProtectedRoute/Protected
 import UserList from './modules/Users/components/UserList/UserList';
 function App() {
 
-  const [loginData, setLoginData] = useState(null);
-
-  const saveLoginData = () => {
-    let encodedToken = localStorage.getItem("token");
-    let decodedtoken = jwtDecode(encodedToken);
-    setLoginData(decodedtoken);
-
-  }
-  // in any re-render data will disappear so we use useEffect 
-  useEffect(() => {
-
-    if (localStorage.getItem("token"))
-      saveLoginData()
-  }, []);
   const routes = createBrowserRouter(
     [
       {
@@ -42,8 +26,8 @@ function App() {
         element: <AuthLayout />,
         errorElement: <NotFound />,
         children: [
-          { index: true, element: <Login saveLoginData={saveLoginData} /> },
-          { path: 'login', element: <Login saveLoginData={saveLoginData} /> },
+          { index: true, element: <Login /> },
+          { path: 'login', element: <Login /> },
           { path: 'register', element: <Register /> },
           { path: 'forget-password', element: <ForgetPass /> },
           { path: 'reset-password', element: <ResetPass /> },
@@ -52,17 +36,52 @@ function App() {
       },
       {
         path: 'dashboard',
-        element: <ProtectedRoute loginData={loginData}> <MasterLayout loginData={loginData} setLoginData={setLoginData} /></ProtectedRoute>,
+        element: <ProtectedRoute > <MasterLayout /></ProtectedRoute>,
         errorElement: <NotFound />,
         children: [
-          { index: true, element: <Dashboard loginData={loginData} setLoginData={setLoginData} /> },
-          { path: '', element: <Dashboard loginData={loginData} setLoginData={setLoginData} /> },
+          { index: true, element: <Dashboard /> },
+          { path: '', element: <Dashboard /> },
+          {
+            path: 'categories', element: (
+              <ProtectedRoute allowedRoles={['SuperAdmin' || "Admin"]}>
+                <CategoriesList />
+              </ProtectedRoute>
+            )
+          },
+          {
+            path: 'users',
+            element: (
+              <ProtectedRoute allowedRoles={['SuperAdmin' || "Admin"]}>
+                <UserList />
+              </ProtectedRoute>
+            )
+          },
+          {
+            path: 'favourites',
+            element: (
+              <ProtectedRoute allowedRoles={['SystemUser']}>
+                <FavList />
+              </ProtectedRoute>
+            )
+          },
+
+          {
+            path: 'edit-recipe/:id',
+            element: (
+              <ProtectedRoute allowedRoles={['SuperAdmin' || "Admin"]}>
+                <EditRecipe />
+              </ProtectedRoute>
+            )
+          },
+          {
+            path: 'add-recipe',
+            element: (
+              <ProtectedRoute allowedRoles={['SuperAdmin' || "Admin"]}>
+                <AddRecipe />
+              </ProtectedRoute>
+            )
+          },
           { path: 'recipes', element: <RecipesList /> },
-          { path: 'add-recipe', element: <AddRecipe /> },
-          { path: 'edit-recipe/:id', element: <EditRecipe /> },
-          { path: 'categories', element: <CategoriesList /> },
-          { path: 'favourites', element: <FavList /> },
-          { path: 'users', element: <UserList /> },
         ]
 
       }

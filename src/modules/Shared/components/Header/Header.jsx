@@ -6,7 +6,8 @@ export default function Header({ imgUrl, title, description, loginData }) {
         <div className="row  align-items-center  text-md-start">
           <div className="col-12 col-md-7 mb-4 mb-md-0">
 
-            <h3 className='header-title'>{title} <span>{loginData}</span></h3>
+            {/* <h3 className='header-title'>{title} <span>{loginData}</span></h3> */}
+            <h3 className='header-title'>{title} </h3>
             <p className='header-desc  '>{description}</p>
 
           </div>

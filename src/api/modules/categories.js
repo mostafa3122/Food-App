@@ -1,7 +1,7 @@
 import axiosClient from "../axiosClint";
 
-export const GetCategories = () => {
-  return axiosClient.get("/Category");
+export const GetCategories = (params) => {
+  return axiosClient.get("/Category", { params });
 };
 export const DeleteCategory = (id) => {
   return axiosClient.delete(`/Category/${id}`);

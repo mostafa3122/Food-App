@@ -13,11 +13,11 @@ export default function Register() {
     const onSubmit = async (data) => {
         try {
             const response = await AuthApi.RegisterApi(data)
-            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('token', response?.data?.token)
             navigate('/verify-account')
             toast.success("Registered successful");
         } catch (error) {
-            toast.error(error.response.data.message || "Something went wrong");
+            toast.error(error?.response?.data?.message || "Something went wrong");
         }
     }
     return (
@@ -39,7 +39,7 @@ export default function Register() {
                             <input {...register("userName", UsernameValidation)} type="text" placeholder='UserName ' className="form-control p-2" aria-describedby="userNameHelpBlock" />
                         </div>
                         {/* validation error */}
-                        {errors.userName && <span className='text-danger'>{errors.userName.message}</span>}
+                        {errors?.userName && <span className='text-danger'>{errors?.userName?.message}</span>}
 
                     </div>
                     {/* Email  */}
@@ -52,7 +52,7 @@ export default function Register() {
                             <input {...register("email", EmailValidation)} type="email" placeholder='Enter your Email' className="form-control p-2" aria-describedby="emailHelpBlock" />
                         </div>
                         {/* validation error */}
-                        {errors.email && <span className='text-danger'>{errors.email.message}</span>}
+                        {errors?.email && <span className='text-danger'>{errors?.email?.message}</span>}
 
                     </div>
                     {/* Country  */}
@@ -65,7 +65,7 @@ export default function Register() {
                             <input {...register("country", CountryValidation)} type="text" placeholder='Country ' className="form-control p-2" aria-describedby="ContryHelpBlock" />
                         </div>
                         {/* validation error */}
-                        {errors.country && <span className='text-danger'>{errors.country.message}</span>}
+                        {errors?.country && <span className='text-danger'>{errors?.country?.message}</span>}
 
                     </div>
                     {/* Phone   */}
@@ -78,7 +78,7 @@ export default function Register() {
                             <input {...register("phoneNumber", PhoneValidation)} type="tel" placeholder='Phone Number ' className="form-control p-2" aria-describedby="phoneNumberHelpBlock" />
                         </div>
                         {/* validation error */}
-                        {errors.phoneNumber && <span className='text-danger'>{errors.phoneNumber.message}</span>}
+                        {errors?.phoneNumber && <span className='text-danger'>{errors?.phoneNumber?.message}</span>}
 
                     </div>
                     {/* Password */}
@@ -94,7 +94,7 @@ export default function Register() {
                             </button>
                         </div>
                         {/* validation error */}
-                        {errors.password && <span className='text-danger'>{errors.password.message}</span>}
+                        {errors?.password && <span className='text-danger'>{errors?.password?.message}</span>}
 
                     </div>
                     {/* Confirm Password */}
@@ -110,7 +110,7 @@ export default function Register() {
                             </button>
                         </div>
                         {/* validation error */}
-                        {errors.confirmPassword && <span className='text-danger'>{errors.confirmPassword.message}</span>}
+                        {errors?.confirmPassword && <span className='text-danger'>{errors?.confirmPassword.message}</span>}
                     </div>
                 </div>
                 {/* Links */}

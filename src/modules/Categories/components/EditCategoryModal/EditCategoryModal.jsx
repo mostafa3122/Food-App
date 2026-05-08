@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Modal } from "react-bootstrap"
 import { useForm } from "react-hook-form"
 
 export default function EditCategoryModal({ show, onClose, onConfirm, selectedItem }) {
     let { register, formState: { errors, isSubmitting }, handleSubmit, reset } = useForm()
 
+    useEffect(() => {
+        if (selectedItem) {
+            reset({ name: selectedItem.name })
+        }
+    }, [selectedItem]) 
     // for handling on confirm for reset form
     const handleConfirm = async (data) => {
         await onConfirm(data)

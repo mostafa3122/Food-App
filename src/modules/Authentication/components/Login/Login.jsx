@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthApi } from '../../../../api';
 import { EmailValidation, PasswordValidation } from '../../../../constants/Validations';
-export default function Login({ saveLoginData }) {
+import { AuthContext } from '../../../../context/AuthContext';
+export default function Login() {
     const [showPass, setShowPass] = useState(false);
+    const { saveLoginData } = useContext(AuthContext)
     let { register, formState: { errors, isSubmitting, isValid }, handleSubmit } = useForm();
     const navigate = useNavigate()
     const onSubmit = async (data) => {
         try {
             const response = await AuthApi.LoginApi(data)
             localStorage.setItem('token', response?.data?.token)
-            await saveLoginData()//save token to reuse again 
-            toast.success("Logged in successful");
+            saveLoginData()
+            toast.success("Logged in successfully");
             navigate('/dashboard')
         } catch (error) {
+
             toast.error(error?.response?.data?.message || "Something went wrong");
         }
     }

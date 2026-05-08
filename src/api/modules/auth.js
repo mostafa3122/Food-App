@@ -16,4 +16,8 @@ export const ForgetApi = (data) => {
   return axiosClient.post("/Users/Reset/Request", data);
 };
 
+export const ChangPasswrodApi = (data) => {
+  return axiosClient.put("/Users/ChangePassword", data);
+};
+
  

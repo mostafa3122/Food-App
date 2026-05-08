@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Header from '../../../Shared/components/Header/Header'
 import headerGirl from '../../../../assets/images/header-girl.png'
 import { Link } from 'react-router-dom'
 import SubHeader from '../../../Shared/SubHeader/SubHeader'
+import { AuthContext } from '../../../../context/AuthContext'
 
-export default function Dashboard({ loginData }) {
+export default function Dashboard() {
+  const { loginData } = useContext(AuthContext)
+
   return (
     <div className='position-relative'>
       <Header
